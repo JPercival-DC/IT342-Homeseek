@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: homeseek-backend
+  config:
+    # Reads KEY=value pairs from the project's .env file (works on Windows, macOS, Linux).
+    import:
+      - "optional:file:./.env[.properties]"
+      - "optional:file:../.env[.properties]"
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/homeseek}
+    username: ${DB_USERNAME:homeseek}
+    password: ${DB_PASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none          # schema is owned by Flyway (db/migration)
+    properties:
+      hibernate.jdbc.time_zone: UTC
+  flyway:
+    enabled: true
+    schemas: homeseek
+    default-schema: homeseek
+    create-schemas: true
+  jackson:
+    default-property-inclusion: non_null
+
+server:
+  port: 8080
+  error:
+    include-message: never
+    include-stacktrace: never
+
+homeseek:
+  jwt:
+    secret: ${JWT_SECRET}      # required, at least 32 characters
+    expiration-hours: 24
+  cors:
+    allowed-origin: ${CORS_ALLOWED_ORIGIN:http://localhost:5173}
+  admin:
+    email: ${ADMIN_EMAIL:}
+    password: ${ADMIN_PASSWORD:}
+    full-name: ${ADMIN_NAME:HomeSeek Admin}

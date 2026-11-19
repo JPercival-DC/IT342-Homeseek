@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:homeseek;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
+    username: sa
+    password: ""
+    driver-class-name: org.h2.Driver
+homeseek:
+  jwt:
+    secret: test-secret-test-secret-test-secret-1234
+  admin:
+    email: admin@test.local
+    password: AdminPass123
+    full-name: Test Admin
