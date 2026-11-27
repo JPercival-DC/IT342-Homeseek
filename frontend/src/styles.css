@@ -36,3 +36,5 @@ nav .disabled { color: #9aa5b3; cursor: not-allowed; }
 .stat .value { font-size: 1.8rem; font-weight: 700; color: var(--blue); }
 .modules li { margin-bottom: .3rem; }
 @media (max-width: 640px) { .body { flex-direction: column; } nav { width: 100%; border-right: 0; border-bottom: 1px solid var(--line); } nav ul { display: flex; flex-wrap: wrap; } }
+input[readonly] { background: #eef2f7; color: var(--muted); }
+.card-form { max-width: 440px; }

@@ -20,7 +20,7 @@ public class JwtService {
 
     public record IssuedToken(String token, String jti, Instant expiresAt) {}
 
-    public record TokenClaims(Long userId, String jti, Instant expiresAt) {}
+    public record TokenClaims(Long userId, String jti, Instant expiresAt, int version) {}
 
     private final SecretKey key;
     private final Duration ttl;
@@ -42,6 +42,7 @@ public class JwtService {
                 .id(jti)
                 .subject(String.valueOf(user.getId()))
                 .claim("role", user.getRole().name())   // informational only; authorization uses the database role
+                .claim("ver", user.getTokenVersion())   // must match the database, so a password change ends this token
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(expiresAt))
                 .signWith(key)
@@ -53,8 +54,9 @@ public class JwtService {
     public Optional<TokenClaims> parse(String token) {
         try {
             var claims = Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
+            Integer version = claims.get("ver", Integer.class);       // tokens from before Increment 2 have none: version 0
             return Optional.of(new TokenClaims(Long.valueOf(claims.getSubject()), claims.getId(),
-                    claims.getExpiration().toInstant()));
+                    claims.getExpiration().toInstant(), version == null ? 0 : version));
         } catch (JwtException | IllegalArgumentException e) {
             return Optional.empty();
         }

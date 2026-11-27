@@ -15,7 +15,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
  * Authenticates a request from its "Authorization: Bearer" token. The token must be validly signed, not expired,
- * not revoked by logout, and its user must still exist and be active. The role always comes from the database.
+ * not revoked by logout, issued under the user's current token version, and its user must still exist and be active. The role always comes from the database.
  * Not a Spring bean on purpose: it is added to the security chain only (see SecurityConfig).
  */
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -39,7 +39,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 if (revokedTokens.existsById(claims.jti())) {
                     return;
                 }
-                users.findById(claims.userId()).filter(u -> u.isActive()).ifPresent(u -> {
+                users.findById(claims.userId()).filter(u -> u.isActive() && u.getTokenVersion() == claims.version()).ifPresent(u -> {
                     var principal = new AuthUser(u.getId(), u.getEmail(), u.getRole(), claims.jti(), claims.expiresAt());
                     var auth = new UsernamePasswordAuthenticationToken(principal, null,
                             List.of(new SimpleGrantedAuthority("ROLE_" + u.getRole().name())));
