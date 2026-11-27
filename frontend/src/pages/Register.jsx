@@ -1,16 +1,11 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api, { readError } from '../api.js';
+import { check } from '../validation.js';
 import Field from '../components/Field.jsx';
 
-// Same rules as the server (FR-001, FR-002). The server is the final authority.
 function validate(f) {
-  const errors = {};
-  if (f.fullName.trim().length < 2 || f.fullName.trim().length > 100) errors.fullName = 'Full name must be 2 to 100 characters';
-  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.email.trim())) errors.email = 'Enter a valid email address';
-  if (!/^\+?[0-9][0-9 -]{6,18}[0-9]$/.test(f.phone.trim())) errors.phone = 'Enter a valid phone number (8 to 20 digits)';
-  if (f.password.length < 8 || f.password.length > 72) errors.password = 'Password must be 8 to 72 characters';
-  else if (!/[A-Za-z]/.test(f.password) || !/\d/.test(f.password)) errors.password = 'Password must contain at least one letter and one number';
+  const errors = check(f, ['fullName', 'email', 'phone', 'password']);
   if (f.confirm !== f.password) errors.confirm = 'Passwords do not match';
   return errors;
 }

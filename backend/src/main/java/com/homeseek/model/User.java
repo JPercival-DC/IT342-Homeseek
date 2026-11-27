@@ -48,6 +48,10 @@ public class User {
     @Column(name = "is_active", nullable = false)
     private boolean active = true;
 
+    /** Raised on every password change/reset; login tokens issued under an older version are rejected. */
+    @Column(name = "token_version", nullable = false)
+    private int tokenVersion;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -75,5 +79,7 @@ public class User {
     public void setGoogleId(String googleId) { this.googleId = googleId; }
     public boolean isActive() { return active; }
     public void setActive(boolean active) { this.active = active; }
+    public int getTokenVersion() { return tokenVersion; }
+    public void setTokenVersion(int tokenVersion) { this.tokenVersion = tokenVersion; }
     public LocalDateTime getCreatedAt() { return createdAt; }
 }

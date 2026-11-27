@@ -36,6 +36,9 @@ export default function Login() {
   return (
     <main className="card narrow">
       <h1>Log in</h1>
+      {location.state?.reset && (
+        <p className="notice" role="status">Password updated. Log in with your new password.</p>
+      )}
       {location.state?.registered && (
         <p className="notice" role="status">Account created. You can now log in.</p>
       )}
@@ -45,6 +48,7 @@ export default function Login() {
         {error && <p className="error banner" role="alert">{error}</p>}
         <button className="btn" type="submit" disabled={busy}>{busy ? 'Logging in...' : 'Log in'}</button>
       </form>
+      <p className="muted"><Link to="/forgot-password">Forgot password?</Link></p>
       <p className="muted">No account yet? <Link to="/register">Create one</Link></p>
     </main>
   );
